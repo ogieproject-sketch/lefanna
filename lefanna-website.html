@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lefanna — Bali Hotel & Villa Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teakwood: #3D2B1F;
+  --terracotta: #B5512E;
+  --sandstone: #D4A574;
+  --linen: #F4ECE0;
+  --ivory: #FAF6EE;
+  --palm: #2D4A3E;
+  --palm-mist: #88A39B;
+  --coral: #E89876;
+  --midnight: #1A1A1A;
+  --charcoal: #2B2B2B;
+  --ash: #6B6B6B;
+  --stone: #A8A199;
+  --paper: #FDFBF7;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--paper); color: var(--charcoal); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; font-family: inherit; cursor: pointer; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ── UTILS ─────────────────────────────── */
+.container { max-width: 1380px; margin: 0 auto; padding: 0 3rem; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--terracotta);
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.eyebrow::before { content:''; width:28px; height:1px; background:var(--terracotta); }
+
+/* ── REVEAL ─────────────────────────────── */
+[data-reveal] { opacity:0; transform:translateY(32px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+[data-reveal="left"] { transform:translateX(-32px); }
+[data-reveal="right"] { transform:translateX(32px); }
+[data-reveal].visible { opacity:1; transform:none; }
+[data-delay="1"] { transition-delay:.1s; }
+[data-delay="2"] { transition-delay:.2s; }
+[data-delay="3"] { transition-delay:.35s; }
+[data-delay="4"] { transition-delay:.5s; }
+[data-delay="5"] { transition-delay:.65s; }
+
+/* ── NAV ─────────────────────────────────── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:900;
+  padding: 1.5rem 3rem;
+  display: flex; align-items:center; justify-content:space-between;
+  transition: all .5s var(--ease);
+}
+nav.scrolled {
+  padding: 1rem 3rem;
+  background: rgba(253,251,247,.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 rgba(61,43,31,.08);
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-style: italic; font-weight:400;
+  font-size: 1.65rem;
+  letter-spacing: -.03em;
+  color: var(--paper);
+  transition: color .4s;
+}
+.nav-logo span { color: var(--terracotta); }
+nav.scrolled .nav-logo { color: var(--teakwood); }
+
+.nav-center {
+  display: flex; gap: 2.5rem; list-style:none;
+}
+.nav-center a {
+  font-size: .8rem; font-weight:500;
+  letter-spacing:.07em; text-transform:uppercase;
+  color: rgba(253,251,247,.8);
+  transition: color .3s;
+  position: relative;
+}
+.nav-center a::after {
+  content:''; position:absolute; bottom:-3px; left:0;
+  width:0; height:1px; background:var(--terracotta);
+  transition: width .3s var(--ease);
+}
+.nav-center a:hover { color:var(--terracotta) !important; }
+.nav-center a:hover::after { width:100%; }
+nav.scrolled .nav-center a { color: var(--ash); }
+
+.nav-right { display:flex; gap:1rem; align-items:center; }
+.nav-btn {
+  padding: .65rem 1.5rem;
+  font-size: .78rem; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase;
+  border-radius:2px;
+  transition: all .3s;
+}
+.nav-btn-ghost {
+  color: var(--paper);
+  border: 1px solid rgba(253,251,247,.35);
+}
+nav.scrolled .nav-btn-ghost { color:var(--teakwood); border-color:rgba(61,43,31,.25); }
+.nav-btn-ghost:hover { background:rgba(253,251,247,.12); }
+nav.scrolled .nav-btn-ghost:hover { background:var(--linen); }
+.nav-btn-primary { background:var(--terracotta); color:var(--ivory); }
+.nav-btn-primary:hover { background:var(--teakwood); transform:translateY(-1px); }
+
+/* ── HERO ─────────────────────────────────── */
+.hero {
+  position: relative; min-height:100vh;
+  display:flex; flex-direction:column;
+  justify-content:flex-end;
+  overflow:hidden;
+}
+.hero-slides {
+  position:absolute; inset:0;
+}
+.hero-slide {
+  position:absolute; inset:0;
+  opacity:0; transition:opacity 1.5s ease;
+}
+.hero-slide.active { opacity:1; }
+.hero-slide img {
+  width:100%; height:100%; object-fit:cover; object-position:center;
+  transform:scale(1.06);
+  animation: heroZoom 8s ease-out forwards;
+}
+@keyframes heroZoom { to { transform:scale(1); } }
+.hero-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(
+    to top,
+    rgba(26,26,26,.9) 0%,
+    rgba(26,26,26,.35) 45%,
+    rgba(26,26,26,.1) 100%
+  );
+}
+
+.hero-content {
+  position:relative; z-index:2;
+  padding: 0 3rem 4rem;
+}
+.hero-eyebrow {
+  font-family:var(--mono);
+  font-size:.72rem; letter-spacing:.25em; text-transform:uppercase;
+  color:var(--sandstone);
+  display:flex; align-items:center; gap:.75rem;
+  margin-bottom:1.25rem;
+  opacity:0; animation: fadeUp .8s .3s var(--ease) forwards;
+}
+.hero-eyebrow::before { content:''; width:32px; height:1px; background:var(--terracotta); }
+.hero-title {
+  font-family:var(--serif);
+  font-size: clamp(3rem, 7.5vw, 7.5rem);
+  font-weight:300; line-height:.92; letter-spacing:-.04em;
+  color:var(--paper);
+  margin-bottom:2.5rem;
+}
+.hero-title .line {
+  display:block; opacity:0; transform:translateY(36px);
+}
+.hero-title .line:nth-child(1) { animation:fadeUp .9s .5s var(--ease) forwards; }
+.hero-title .line:nth-child(2) { animation:fadeUp .9s .65s var(--ease) forwards; }
+.hero-title .line:nth-child(3) {
+  animation:fadeUp .9s .8s var(--ease) forwards;
+  color:var(--terracotta); font-style:italic; font-weight:400;
+}
+
+/* Search box */
+.search-box {
+  background:rgba(253,251,247,.96);
+  backdrop-filter:blur(16px);
+  border-radius:4px;
+  padding:1.25rem 1.5rem;
+  display:flex; align-items:center; gap:0;
+  max-width:860px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  opacity:0; animation:fadeUp .8s 1s var(--ease) forwards;
+}
+.search-divider { width:1px; height:44px; background:rgba(61,43,31,.12); margin:0 .5rem; }
+.search-field {
+  flex:1; padding:.5rem 1rem;
+  display:flex; flex-direction:column; gap:.2rem;
+}
+.search-field-label {
+  font-family:var(--mono);
+  font-size:.62rem; text-transform:uppercase; letter-spacing:.15em;
+  color:var(--ash);
+}
+.search-field-input {
+  border:none; background:transparent;
+  font-family:var(--sans); font-size:.9rem;
+  color:var(--teakwood); font-weight:500;
+  width:100%; outline:none;
+}
+.search-field-input::placeholder { color:var(--stone); font-weight:400; }
+select.search-field-input { cursor:pointer; appearance:none; }
+.search-btn {
+  padding:.9rem 2rem;
+  background:var(--terracotta);
+  color:var(--ivory);
+  font-family:var(--sans); font-size:.8rem;
+  font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  border-radius:2px;
+  transition:all .3s; white-space:nowrap;
+  display:flex; align-items:center; gap:.5rem;
+}
+.search-btn:hover { background:var(--teakwood); transform:translateY(-2px); }
+
+/* Slide dots */
+.hero-dots {
+  position:absolute; bottom:2rem; right:3rem; z-index:2;
+  display:flex; gap:.5rem;
+  opacity:0; animation:fadeUp .6s 1.3s var(--ease) forwards;
+}
+.hero-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(253,251,247,.35);
+  transition:all .4s; cursor:pointer;
+}
+.hero-dot.active { width:24px; border-radius:100px; background:var(--terracotta); }
+
+/* Hero stats */
+.hero-stats {
+  position:absolute; top:50%; right:3rem;
+  transform:translateY(-50%);
+  z-index:2; display:flex; flex-direction:column; gap:2rem;
+  opacity:0; animation:fadeUp .8s 1s var(--ease) forwards;
+}
+.hero-stat { text-align:right; }
+.hero-stat-num {
+  font-family:var(--serif); font-size:2.75rem;
+  font-weight:400; color:var(--paper); letter-spacing:-.03em; line-height:1;
+}
+.hero-stat-label {
+  font-family:var(--mono); font-size:.62rem;
+  text-transform:uppercase; letter-spacing:.2em;
+  color:var(--sandstone); margin-top:.25rem;
+}
+.hero-stat-line { width:100%; height:1px; background:rgba(253,251,247,.15); margin-bottom:2rem; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(32px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ── TICKER ─────────────────────────────── */
+.ticker { background:var(--terracotta); padding:.8rem 0; overflow:hidden; }
+.ticker-track {
+  display:inline-flex; white-space:nowrap;
+  animation:ticker 30s linear infinite;
+}
+.ticker-item {
+  display:inline-flex; align-items:center; gap:1.5rem;
+  padding:0 2rem;
+  font-family:var(--mono); font-size:.72rem;
+  text-transform:uppercase; letter-spacing:.18em; color:var(--ivory);
+}
+.ticker-dot { color:var(--linen); opacity:.5; font-size:.5rem; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ── WHY BOOK ───────────────────────────── */
+.why-book { padding:7rem 0; background:var(--paper); }
+.why-header { text-align:center; margin-bottom:5rem; }
+.why-title {
+  font-family:var(--serif);
+  font-size:clamp(2.25rem,4vw,3.75rem);
+  font-weight:300; color:var(--teakwood); letter-spacing:-.03em;
+}
+.why-title em { font-style:italic; color:var(--terracotta); }
+.why-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+.why-card {
+  position:relative; overflow:hidden;
+  min-height:480px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  cursor:pointer;
+}
+.why-card-img {
+  position:absolute; inset:0;
+  transition:transform 1.2s var(--ease);
+}
+.why-card:hover .why-card-img { transform:scale(1.06); }
+.why-card-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(26,26,26,.82) 0%, rgba(26,26,26,.1) 60%, transparent 100%);
+}
+.why-card-body {
+  position:relative; z-index:2; padding:2.5rem;
+}
+.why-card-num {
+  font-family:var(--serif); font-size:4rem;
+  font-weight:300; color:rgba(253,251,247,.12);
+  letter-spacing:-.04em; line-height:1;
+  margin-bottom:.5rem;
+}
+.why-card-title {
+  font-family:var(--serif);
+  font-size:1.75rem; font-style:italic;
+  font-weight:400; color:var(--paper); letter-spacing:-.02em;
+  margin-bottom:.75rem; line-height:1.1;
+}
+.why-card-body p { font-size:.9rem; line-height:1.7; color:rgba(253,251,247,.7); }
+
+/* ── PROPERTIES SEARCH ─────────────────── */
+.properties-section { padding:8rem 0; background:var(--ivory); }
+.prop-header {
+  display:flex; justify-content:space-between; align-items:flex-end;
+  margin-bottom:3.5rem;
+}
+.prop-title {
+  font-family:var(--serif);
+  font-size:clamp(2.25rem,4vw,3.5rem);
+  font-weight:300; color:var(--teakwood); letter-spacing:-.03em;
+}
+.prop-title em { font-style:italic; color:var(--terracotta); }
+.prop-filters { display:flex; gap:.5rem; }
+.prop-filter {
+  padding:.55rem 1.25rem;
+  font-family:var(--mono); font-size:.68rem;
+  text-transform:uppercase; letter-spacing:.12em;
+  color:var(--ash); background:var(--paper);
+  border:1px solid rgba(61,43,31,.12); border-radius:100px;
+  transition:all .3s; cursor:pointer;
+}
+.prop-filter:hover, .prop-filter.active {
+  background:var(--teakwood); color:var(--linen); border-color:var(--teakwood);
+}
+.prop-view-all {
+  font-family:var(--mono); font-size:.72rem;
+  text-transform:uppercase; letter-spacing:.15em; color:var(--ash);
+  display:flex; align-items:center; gap:.5rem;
+  transition:color .3s;
+}
+.prop-view-all:hover { color:var(--terracotta); }
+.prop-view-all::after { content:'→'; font-family:var(--serif); font-size:1.1rem; transition:transform .3s; }
+.prop-view-all:hover::after { transform:translateX(5px); }
+
+/* Property cards grid */
+.prop-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+}
+.prop-card {
+  border-radius:4px; overflow:hidden;
+  background:var(--teakwood);
+  position:relative; cursor:pointer;
+  box-shadow:0 4px 20px rgba(61,43,31,.08);
+  transition:box-shadow .4s var(--ease), transform .4s var(--ease);
+}
+.prop-card:hover { transform:translateY(-6px); box-shadow:0 20px 40px rgba(61,43,31,.15); }
+.prop-card-img {
+  height:280px; position:relative; overflow:hidden;
+}
+.prop-card-img img { transition:transform 1.2s var(--ease); }
+.prop-card:hover .prop-card-img img { transform:scale(1.07); }
+.prop-card-tag {
+  position:absolute; top:1rem; left:1rem;
+  padding:.3rem .8rem;
+  background:var(--terracotta);
+  font-family:var(--mono); font-size:.6rem;
+  text-transform:uppercase; letter-spacing:.15em; color:var(--ivory);
+  border-radius:100px; z-index:2;
+}
+.prop-card-badge {
+  position:absolute; top:1rem; right:1rem;
+  padding:.3rem .8rem;
+  background:rgba(26,26,26,.7);
+  backdrop-filter:blur(8px);
+  font-family:var(--mono); font-size:.6rem;
+  text-transform:uppercase; letter-spacing:.12em; color:var(--sandstone);
+  border-radius:100px; z-index:2;
+}
+.prop-card-body { padding:1.5rem; background:var(--paper); }
+.prop-card-loc {
+  font-family:var(--mono); font-size:.65rem;
+  text-transform:uppercase; letter-spacing:.15em;
+  color:var(--terracotta); margin-bottom:.4rem;
+}
+.prop-card-name {
+  font-family:var(--serif); font-style:italic;
+  font-size:1.5rem; font-weight:400;
+  color:var(--teakwood); letter-spacing:-.02em;
+  margin-bottom:.35rem; line-height:1.1;
+}
+.prop-card-meta {
+  font-size:.85rem; color:var(--ash); margin-bottom:1.25rem;
+  display:flex; gap:.75rem; align-items:center;
+  flex-wrap:wrap;
+}
+.prop-card-meta span { display:flex; align-items:center; gap:.3rem; }
+.prop-card-footer {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:1.25rem;
+  border-top:1px solid rgba(61,43,31,.08);
+}
+.prop-card-price { font-family:var(--serif); font-size:1.2rem; color:var(--teakwood); }
+.prop-card-price small { font-family:var(--sans); font-size:.75rem; color:var(--ash); font-style:normal; }
+.prop-card-rating {
+  display:flex; align-items:center; gap:.3rem;
+  font-family:var(--mono); font-size:.72rem; color:var(--teakwood);
+}
+.star { color:var(--sandstone); font-size:.7rem; }
+
+/* ── DESTINATIONS ───────────────────────── */
+.destinations { padding:8rem 0; background:var(--paper); }
+.dest-header { margin-bottom:4rem; }
+.dest-title {
+  font-family:var(--serif);
+  font-size:clamp(2.25rem,4vw,3.5rem);
+  font-weight:300; color:var(--teakwood); letter-spacing:-.03em;
+}
+.dest-title em { font-style:italic; color:var(--terracotta); }
+.dest-grid {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:1rem;
+}
+.dest-card {
+  position:relative; border-radius:4px; overflow:hidden;
+  cursor:pointer; aspect-ratio:3/4;
+  transition:transform .4s var(--ease);
+}
+.dest-card:hover { transform:translateY(-6px); }
+.dest-card img { transition:transform 1.2s var(--ease); }
+.dest-card:hover img { transform:scale(1.08); }
+.dest-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(26,26,26,.8) 0%, transparent 55%);
+}
+.dest-content {
+  position:absolute; bottom:0; left:0; right:0; padding:1.5rem 1.25rem;
+}
+.dest-name {
+  font-family:var(--serif); font-style:italic;
+  font-size:1.35rem; font-weight:400;
+  color:var(--paper); letter-spacing:-.02em; margin-bottom:.2rem;
+}
+.dest-count {
+  font-family:var(--mono); font-size:.65rem;
+  text-transform:uppercase; letter-spacing:.15em; color:var(--sandstone);
+}
+.dest-btn {
+  display:inline-block; margin-top:.75rem;
+  padding:.4rem .9rem;
+  background:rgba(253,251,247,.15);
+  border:1px solid rgba(253,251,247,.3);
+  backdrop-filter:blur(8px);
+  font-family:var(--mono); font-size:.6rem;
+  text-transform:uppercase; letter-spacing:.12em; color:var(--paper);
+  border-radius:100px;
+  opacity:0; transform:translateY(6px);
+  transition:all .3s;
+}
+.dest-card:hover .dest-btn { opacity:1; transform:none; }
+
+/* ── EVENTS / CELEBRATE ─────────────────── */
+.celebrate { padding:8rem 0; background:var(--teakwood); }
+.celebrate-header { margin-bottom:4rem; display:flex; justify-content:space-between; align-items:flex-end; }
+.celebrate-title {
+  font-family:var(--serif);
+  font-size:clamp(2.25rem,4vw,3.5rem);
+  font-weight:300; color:var(--linen); letter-spacing:-.03em;
+}
+.celebrate-title em { font-style:italic; color:var(--sandstone); }
+.celebrate-sub { font-size:.95rem; color:rgba(244,236,224,.6); max-width:400px; line-height:1.7; }
+/* Masonry photo collage */
+.celebrate-mosaic {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(2,280px);
+  gap:1rem; margin-bottom:4rem;
+}
+.mosaic-item {
+  border-radius:4px; overflow:hidden; position:relative;
+  cursor:pointer; transition:transform .4s var(--ease);
+}
+.mosaic-item:hover { transform:scale(1.02); }
+.mosaic-item img { transition:transform 1.2s var(--ease); }
+.mosaic-item:hover img { transform:scale(1.08); }
+.mosaic-item.tall { grid-row:span 2; }
+.mosaic-item.wide { grid-column:span 2; }
+.mosaic-label {
+  position:absolute; bottom:.75rem; left:.75rem;
+  font-family:var(--mono); font-size:.62rem;
+  text-transform:uppercase; letter-spacing:.15em;
+  color:var(--sandstone); background:rgba(26,26,26,.6);
+  backdrop-filter:blur(8px);
+  padding:.3rem .7rem; border-radius:100px;
+}
+
+/* Featured event cards */
+.event-cards {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;
+}
+.event-card {
+  border-radius:4px; overflow:hidden;
+  background:rgba(253,251,247,.05);
+  border:1px solid rgba(244,236,224,.1);
+  transition:all .4s var(--ease); cursor:pointer;
+}
+.event-card:hover {
+  background:rgba(253,251,247,.08);
+  transform:translateY(-4px);
+  border-color:rgba(244,236,224,.2);
+}
+.event-card-img { height:240px; position:relative; overflow:hidden; }
+.event-card-img img { transition:transform 1.2s var(--ease); }
+.event-card:hover .event-card-img img { transform:scale(1.06); }
+.event-card-body { padding:1.5rem; }
+.event-card-tag {
+  font-family:var(--mono); font-size:.62rem;
+  text-transform:uppercase; letter-spacing:.15em;
+  color:var(--sandstone); margin-bottom:.5rem;
+}
+.event-card-name {
+  font-family:var(--serif); font-style:italic;
+  font-size:1.4rem; font-weight:400; color:var(--linen);
+  letter-spacing:-.02em; margin-bottom:.4rem;
+}
+.event-card-meta { font-size:.85rem; color:rgba(244,236,224,.55); margin-bottom:1.25rem; line-height:1.6; }
+.event-card-footer {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:1rem; border-top:1px solid rgba(244,236,224,.1);
+}
+.event-card-cap { font-family:var(--mono); font-size:.65rem; color:var(--sandstone); text-transform:uppercase; letter-spacing:.12em; }
+.event-card-cta {
+  font-family:var(--mono); font-size:.65rem;
+  text-transform:uppercase; letter-spacing:.12em; color:var(--linen);
+  display:flex; align-items:center; gap:.4rem;
+  transition:gap .3s;
+}
+.event-card:hover .event-card-cta { gap:.7rem; }
+
+/* ── REVIEWS ────────────────────────────── */
+.reviews { padding:8rem 0; background:var(--linen); overflow:hidden; }
+.reviews-header { margin-bottom:4rem; }
+.reviews-title {
+  font-family:var(--serif);
+  font-size:clamp(2.25rem,4vw,3.5rem);
+  font-weight:300; color:var(--teakwood); letter-spacing:-.03em;
+}
+.reviews-title em { font-style:italic; color:var(--terracotta); }
+.reviews-track-wrap { overflow:hidden; position:relative; }
+.reviews-track-wrap::before,
+.reviews-track-wrap::after {
+  content:''; position:absolute; top:0; bottom:0; width:100px; z-index:2;
+  pointer-events:none;
+}
+.reviews-track-wrap::before { left:0; background:linear-gradient(to right,var(--linen),transparent); }
+.reviews-track-wrap::after  { right:0; background:linear-gradient(to left,var(--linen),transparent); }
+.reviews-track {
+  display:flex; gap:1.5rem;
+  animation:reviewScroll 40s linear infinite;
+  width:max-content;
+}
+.reviews-track:hover { animation-play-state:paused; }
+.review-card {
+  width:380px; flex-shrink:0;
+  background:var(--paper); border-radius:4px;
+  border:1px solid rgba(61,43,31,.08);
+  overflow:hidden;
+  transition:transform .4s var(--ease);
+}
+.review-card:hover { transform:translateY(-4px); }
+.review-card-img { height:200px; position:relative; }
+.review-card-body { padding:1.5rem; }
+.review-stars { display:flex; gap:3px; margin-bottom:1rem; }
+.review-stars span { color:var(--sandstone); font-size:.8rem; }
+.review-villa {
+  font-family:var(--serif); font-style:italic;
+  font-size:1.2rem; font-weight:400;
+  color:var(--teakwood); letter-spacing:-.02em; margin-bottom:.75rem;
+}
+.review-text {
+  font-size:.875rem; line-height:1.75; color:var(--ash);
+  margin-bottom:1.25rem;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+.review-author {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:1rem; border-top:1px solid rgba(61,43,31,.07);
+}
+.review-name { font-weight:600; font-size:.85rem; color:var(--teakwood); }
+.review-country {
+  font-family:var(--mono); font-size:.65rem;
+  text-transform:uppercase; letter-spacing:.12em; color:var(--ash);
+}
+@keyframes reviewScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ── PERKS ──────────────────────────────── */
+.perks { padding:7rem 0; background:var(--paper); }
+.perks-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:6rem; align-items:center; }
+.perks-left {}
+.perks-title {
+  font-family:var(--serif);
+  font-size:clamp(2rem,3.5vw,3rem);
+  font-weight:300; color:var(--teakwood); letter-spacing:-.03em;
+  margin-bottom:1.5rem; line-height:1.1;
+}
+.perks-title em { font-style:italic; color:var(--terracotta); }
+.perks-body { font-size:.95rem; line-height:1.8; color:var(--ash); max-width:380px; margin-bottom:2.5rem; }
+.perks-list { list-style:none; display:flex; flex-direction:column; gap:1rem; }
+.perks-list li {
+  display:flex; gap:1rem; align-items:flex-start;
+  font-size:.92rem; color:var(--charcoal); line-height:1.5;
+}
+.perks-list li::before {
+  content:'◆'; color:var(--terracotta); font-size:.6rem; margin-top:.4rem; flex-shrink:0;
+}
+.perks-cta {
+  display:inline-flex; align-items:center; gap:.75rem;
+  margin-top:2.5rem;
+  padding:1rem 2.25rem;
+  background:var(--teakwood); color:var(--linen);
+  font-size:.82rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase;
+  border-radius:2px;
+  transition:all .35s var(--ease);
+}
+.perks-cta:hover { background:var(--terracotta); transform:translateY(-2px); box-shadow:0 12px 30px rgba(181,81,46,.25); }
+.perks-right { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.perk-img-card {
+  border-radius:4px; overflow:hidden;
+  position:relative;
+  transition:transform .4s var(--ease);
+}
+.perk-img-card:hover { transform:scale(1.02); }
+.perk-img-card:nth-child(1) { aspect-ratio:3/4; }
+.perk-img-card:nth-child(2) { aspect-ratio:3/4; margin-top:3rem; }
+.perk-img-card:nth-child(3) { aspect-ratio:4/3; grid-column:span 2; height:220px; }
+.perk-img-card img { transition:transform 1.2s var(--ease); }
+.perk-img-card:hover img { transform:scale(1.06); }
+.perk-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(to top,rgba(61,43,31,.7),transparent);
+  padding:1.5rem 1.25rem;
+}
+.perk-name {
+  font-family:var(--serif); font-style:italic;
+  font-size:1.1rem; font-weight:400; color:var(--linen);
+}
+
+/* ── PARTNERS ───────────────────────────── */
+.partners { padding:4rem 0; background:var(--ivory); border-top:1px solid rgba(61,43,31,.07); }
+.partners-label {
+  text-align:center;
+  font-family:var(--mono); font-size:.68rem;
+  text-transform:uppercase; letter-spacing:.3em; color:var(--stone);
+  margin-bottom:2.5rem;
+}
+.partners-logos { display:flex; justify-content:center; align-items:center; gap:4rem; flex-wrap:wrap; }
+.partner { font-family:var(--serif); font-style:italic; font-size:1.35rem; color:rgba(61,43,31,.22); transition:color .3s; }
+.partner:hover { color:var(--teakwood); }
+
+/* ── NEWSLETTER ─────────────────────────── */
+.newsletter { padding:7rem 0; background:var(--teakwood); position:relative; overflow:hidden; }
+.newsletter::before {
+  content:'lefanna';
+  position:absolute; bottom:-4rem; right:-2rem;
+  font-family:var(--serif); font-style:italic;
+  font-size:clamp(8rem,18vw,18rem); font-weight:300;
+  color:rgba(244,236,224,.04); letter-spacing:-.04em;
+  pointer-events:none; white-space:nowrap;
+}
+.newsletter-inner {
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center;
+}
+.newsletter-title {
+  font-family:var(--serif);
+  font-size:clamp(2rem,3.5vw,3rem);
+  font-weight:300; color:var(--linen); letter-spacing:-.03em; line-height:1.1;
+}
+.newsletter-title em { font-style:italic; color:var(--sandstone); }
+.newsletter-body { font-size:.95rem; color:rgba(244,236,224,.6); line-height:1.8; margin-top:1rem; }
+.newsletter-form { display:flex; flex-direction:column; gap:1rem; }
+.newsletter-input {
+  padding:.95rem 1.25rem;
+  background:rgba(253,251,247,.08);
+  border:1px solid rgba(244,236,224,.15);
+  border-radius:2px; color:var(--linen);
+  font-family:var(--sans); font-size:.95rem;
+  transition:all .3s; outline:none;
+}
+.newsletter-input::placeholder { color:rgba(244,236,224,.35); }
+.newsletter-input:focus { border-color:var(--terracotta); background:rgba(253,251,247,.12); }
+.newsletter-btn {
+  padding:1rem;
+  background:var(--terracotta); color:var(--ivory);
+  font-family:var(--sans); font-size:.85rem; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase;
+  border-radius:2px;
+  transition:all .35s var(--ease);
+}
+.newsletter-btn:hover { background:var(--sandstone); color:var(--teakwood); transform:translateY(-2px); }
+.newsletter-note { font-family:var(--mono); font-size:.65rem; color:rgba(244,236,224,.3); letter-spacing:.1em; }
+
+/* ── FOOTER ─────────────────────────────── */
+footer { background:var(--midnight); color:var(--linen); padding:6rem 0 2.5rem; }
+.footer-top {
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr 1fr;
+  gap:3rem; margin-bottom:5rem;
+}
+.footer-logo-wrap { margin-bottom:1.5rem; }
+.footer-logo {
+  font-family:var(--serif); font-style:italic; font-size:2.25rem;
+  font-weight:400; letter-spacing:-.03em;
+}
+.footer-logo span { color:var(--terracotta); }
+.footer-tagline { font-size:.9rem; color:rgba(244,236,224,.45); line-height:1.75; max-width:300px; margin-bottom:2rem; }
+.footer-socials { display:flex; gap:.75rem; }
+.footer-social {
+  width:38px; height:38px; border-radius:2px;
+  border:1px solid rgba(244,236,224,.12);
+  display:flex; align-items:center; justify-content:center;
+  transition:all .3s;
+}
+.footer-social:hover { border-color:var(--terracotta); background:var(--terracotta); }
+.footer-social svg { width:15px; height:15px; fill:none; stroke:var(--linen); stroke-width:1.5; }
+.footer-col-title {
+  font-family:var(--mono); font-size:.65rem;
+  text-transform:uppercase; letter-spacing:.25em; color:var(--sandstone);
+  margin-bottom:1.5rem;
+}
+.footer-links { list-style:none; display:flex; flex-direction:column; gap:.8rem; }
+.footer-links a { font-size:.875rem; color:rgba(244,236,224,.45); transition:color .3s; }
+.footer-links a:hover { color:var(--linen); }
+.footer-contact { margin-top:1.75rem; }
+.footer-contact-item {
+  font-size:.85rem; color:rgba(244,236,224,.45); margin-bottom:.5rem;
+  display:flex; align-items:flex-start; gap:.5rem; line-height:1.5;
+}
+.footer-contact-item svg { width:14px; height:14px; flex-shrink:0; margin-top:.2rem; }
+.footer-bottom {
+  padding-top:2rem;
+  border-top:1px solid rgba(244,236,224,.07);
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:1rem;
+}
+.footer-copy {
+  font-family:var(--mono); font-size:.68rem;
+  text-transform:uppercase; letter-spacing:.12em; color:rgba(244,236,224,.25);
+}
+.footer-legal { display:flex; gap:2rem; }
+.footer-legal a { font-family:var(--mono); font-size:.65rem; color:rgba(244,236,224,.25); letter-spacing:.1em; text-transform:uppercase; transition:color .3s; }
+.footer-legal a:hover { color:rgba(244,236,224,.6); }
+
+/* Whatsapp floating */
+.wa-float {
+  position:fixed; bottom:2rem; right:2rem; z-index:800;
+  width:52px; height:52px; border-radius:50%;
+  background:#25D366; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 20px rgba(37,211,102,.4);
+  transition:transform .3s, box-shadow .3s;
+}
+.wa-float:hover { transform:scale(1.1); box-shadow:0 8px 30px rgba(37,211,102,.5); }
+.wa-float svg { width:26px; height:26px; }
+
+/* ── RESPONSIVE ─────────────────────────── */
+@media(max-width:1100px) {
+  .container { padding:0 2rem; }
+  nav { padding:1.25rem 2rem; }
+  nav.scrolled { padding:.9rem 2rem; }
+  .why-grid { grid-template-columns:1fr; }
+  .prop-grid { grid-template-columns:1fr 1fr; }
+  .dest-grid { grid-template-columns:repeat(3,1fr); }
+  .celebrate-mosaic { grid-template-rows:repeat(2,220px); }
+  .event-cards { grid-template-columns:1fr 1fr; }
+  .perks-grid { grid-template-columns:1fr; gap:3rem; }
+  .footer-top { grid-template-columns:1fr 1fr; gap:2.5rem; }
+  .newsletter-inner { grid-template-columns:1fr; gap:3rem; }
+}
+@media(max-width:768px) {
+  .nav-center, .nav-btn-ghost { display:none; }
+  .hero-stats { display:none; }
+  .search-box { flex-direction:column; gap:.5rem; }
+  .search-divider { display:none; }
+  .prop-grid, .event-cards { grid-template-columns:1fr; }
+  .dest-grid { grid-template-columns:1fr 1fr; }
+  .celebrate-mosaic { grid-template-columns:1fr 1fr; grid-template-rows:repeat(3,200px); }
+  .celebrate-header { flex-direction:column; align-items:flex-start; gap:1rem; }
+  .prop-header { flex-direction:column; align-items:flex-start; gap:1rem; }
+  .footer-top { grid-template-columns:1fr; }
+  .perks-right { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/6281234567890" class="wa-float" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">lefanna<span>.</span></a>
+  <ul class="nav-center">
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="nav-btn nav-btn-ghost">Management Enquiry</a>
+    <a href="#contact" class="nav-btn nav-btn-primary">Enquire Now</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════
+     HERO
+═══════════════════════════ -->
+<section class="hero">
+  <div class="hero-slides" id="heroSlides">
+    <div class="hero-slide active">
+      <img src="https://images.unsplash.com/photo-1537953773345-d172ccf13cf4?w=1920&q=90&auto=format&fit=crop" alt="Bali villa aerial">
+    </div>
+    <div class="hero-slide">
+      <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1920&q=90&auto=format&fit=crop" alt="Villa pool">
+    </div>
+    <div class="hero-slide">
+      <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1920&q=90&auto=format&fit=crop" alt="Luxury hotel">
+    </div>
+    <div class="hero-slide">
+      <img src="https://images.unsplash.com/photo-1540541338537-1220020e4c92?w=1920&q=90&auto=format&fit=crop" alt="Bali resort">
+    </div>
+  </div>
+  <div class="hero-overlay"></div>
+
+  <!-- Stats right -->
+  <div class="hero-stats">
+    <div class="hero-stat-line"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="47">47</div>
+      <div class="hero-stat-label">Properties managed</div>
+    </div>
+    <div class="hero-stat-line"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="98">98%</div>
+      <div class="hero-stat-label">Guest satisfaction</div>
+    </div>
+    <div class="hero-stat-line"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">4.9★</div>
+      <div class="hero-stat-label">Average rating</div>
+    </div>
+  </div>
+
+  <div class="hero-content container">
+    <p class="hero-eyebrow">Bali's finest property management</p>
+    <h1 class="hero-title">
+      <span class="line">Villas that make</span>
+      <span class="line">you feel</span>
+      <span class="line">at home.</span>
+    </h1>
+
+    <!-- SEARCH BOX -->
+    <div class="search-box">
+      <div class="search-field">
+        <span class="search-field-label">Find a property</span>
+        <input type="text" class="search-field-input" placeholder="Villa name or keyword...">
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <span class="search-field-label">Destination</span>
+        <select class="search-field-input">
+          <option value="">All locations</option>
+          <option>Seminyak</option>
+          <option>Canggu</option>
+          <option>Ubud</option>
+          <option>Uluwatu</option>
+          <option>Nusa Dua</option>
+          <option>Jimbaran</option>
+          <option>Sanur</option>
+        </select>
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <span class="search-field-label">Check-in — Check-out</span>
+        <input type="text" class="search-field-input" placeholder="Select dates" id="datepicker" readonly>
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field" style="flex:0 0 auto;">
+        <span class="search-field-label">Guests</span>
+        <select class="search-field-input" style="min-width:80px;">
+          <option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>8+</option>
+        </select>
+      </div>
+      <button class="search-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search
+      </button>
+    </div>
+  </div>
+
+  <!-- Slide dots -->
+  <div class="hero-dots" id="heroDots">
+    <div class="hero-dot active" data-slide="0"></div>
+    <div class="hero-dot" data-slide="1"></div>
+    <div class="hero-dot" data-slide="2"></div>
+    <div class="hero-dot" data-slide="3"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">Seminyak <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Ubud <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Canggu <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Nusa Dua <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Uluwatu <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Jimbaran <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Sanur <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Kerobokan <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Seminyak <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Ubud <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Canggu <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Nusa Dua <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Uluwatu <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Jimbaran <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Sanur <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Kerobokan <span class="ticker-dot">◆</span></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     WHY BOOK WITH US
+═══════════════════════════ -->
+<section class="why-book" id="about">
+  <div class="container">
+    <div class="why-header" data-reveal>
+      <p class="eyebrow" style="justify-content:center;">Why choose Lefanna</p>
+      <h2 class="why-title">Everything your stay <em>deserves.</em></h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card" data-reveal data-delay="1">
+        <div class="why-card-img">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=90&auto=format&fit=crop" alt="Best price">
+        </div>
+        <div class="why-card-overlay"></div>
+        <div class="why-card-body">
+          <div class="why-card-num">01</div>
+          <h3 class="why-card-title">Best Price Guaranteed</h3>
+          <p>Book directly with Lefanna and get the best available rates — no hidden fees, no markups. Our direct channel always beats third-party platforms.</p>
+        </div>
+      </div>
+      <div class="why-card" data-reveal data-delay="2">
+        <div class="why-card-img">
+          <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=90&auto=format&fit=crop" alt="Airport transfer">
+        </div>
+        <div class="why-card-overlay"></div>
+        <div class="why-card-body">
+          <div class="why-card-num">02</div>
+          <h3 class="why-card-title">Complimentary Transfer</h3>
+          <p>Begin your Bali escape in complete comfort. Every booking includes a private airport pickup — your driver will be waiting with a cold towel and a warm welcome.</p>
+        </div>
+      </div>
+      <div class="why-card" data-reveal data-delay="3">
+        <div class="why-card-img">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=90&auto=format&fit=crop" alt="Breakfast">
+        </div>
+        <div class="why-card-overlay"></div>
+        <div class="why-card-body">
+          <div class="why-card-num">03</div>
+          <h3 class="why-card-title">Complimentary Breakfast</h3>
+          <p>Start each morning right. A fresh, customised breakfast — Indonesian, American, or sweet indulgence — is included with every night's stay at all Lefanna properties.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     FEATURED PROPERTIES
+═══════════════════════════ -->
+<section class="properties-section" id="properties">
+  <div class="container">
+    <div class="prop-header">
+      <div data-reveal>
+        <p class="eyebrow">Featured portfolio</p>
+        <h2 class="prop-title">Properties we <em>tend to.</em></h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem;align-items:flex-end;">
+        <div class="prop-filters" data-reveal>
+          <button class="prop-filter active">All</button>
+          <button class="prop-filter">Villas</button>
+          <button class="prop-filter">Hotels</button>
+          <button class="prop-filter">Resorts</button>
+        </div>
+        <a href="#" class="prop-view-all" data-reveal>View all 47 properties</a>
+      </div>
+    </div>
+
+    <div class="prop-grid">
+
+      <div class="prop-card" data-reveal data-delay="1">
+        <div class="prop-card-img">
+          <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=90&auto=format&fit=crop" alt="Villa Selasih">
+          <span class="prop-card-tag">Villa</span>
+          <span class="prop-card-badge">★ Featured</span>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-loc">Seminyak, Bali</div>
+          <h3 class="prop-card-name">Villa Selasih</h3>
+          <div class="prop-card-meta">
+            <span>🛏 4 Bedrooms</span>
+            <span>👤 8 Guests</span>
+            <span>🏊 Private Pool</span>
+          </div>
+          <div class="prop-card-footer">
+            <div class="prop-card-price">
+              $680 <small>/ night</small>
+            </div>
+            <div class="prop-card-rating">
+              <span class="star">★</span> 4.9 (128 reviews)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prop-card" data-reveal data-delay="2">
+        <div class="prop-card-img">
+          <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=90&auto=format&fit=crop" alt="Tirta Wangi">
+          <span class="prop-card-tag">Boutique Hotel</span>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-loc">Ubud, Bali</div>
+          <h3 class="prop-card-name">Tirta Wangi</h3>
+          <div class="prop-card-meta">
+            <span>🛏 12 Suites</span>
+            <span>🌿 Rice Field View</span>
+            <span>🧖 Spa</span>
+          </div>
+          <div class="prop-card-footer">
+            <div class="prop-card-price">$320 <small>/ night</small></div>
+            <div class="prop-card-rating"><span class="star">★</span> 4.8 (96 reviews)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prop-card" data-reveal data-delay="3">
+        <div class="prop-card-img">
+          <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=90&auto=format&fit=crop" alt="Karang Putih">
+          <span class="prop-card-tag">Resort</span>
+          <span class="prop-card-badge">🆕 New</span>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-loc">Nusa Dua, Bali</div>
+          <h3 class="prop-card-name">Karang Putih</h3>
+          <div class="prop-card-meta">
+            <span>🛏 36 Rooms</span>
+            <span>🏖 Beach Club</span>
+            <span>🏊 3 Pools</span>
+          </div>
+          <div class="prop-card-footer">
+            <div class="prop-card-price">$540 <small>/ night</small></div>
+            <div class="prop-card-rating"><span class="star">★</span> 4.9 (214 reviews)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prop-card" data-reveal data-delay="1">
+        <div class="prop-card-img">
+          <img src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&q=90&auto=format&fit=crop" alt="Uma Lestari">
+          <span class="prop-card-tag">Villa</span>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-loc">Uluwatu, Bali</div>
+          <h3 class="prop-card-name">Uma Lestari</h3>
+          <div class="prop-card-meta">
+            <span>🛏 5 Bedrooms</span>
+            <span>🌊 Ocean View</span>
+            <span>🏊 Clifftop Pool</span>
+          </div>
+          <div class="prop-card-footer">
+            <div class="prop-card-price">$720 <small>/ night</small></div>
+            <div class="prop-card-rating"><span class="star">★</span> 5.0 (87 reviews)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prop-card" data-reveal data-delay="2">
+        <div class="prop-card-img">
+          <img src="https://images.unsplash.com/photo-1540202404-a2f29016b523?w=800&q=90&auto=format&fit=crop" alt="Dewi Sari">
+          <span class="prop-card-tag">Villa</span>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-loc">Canggu, Bali</div>
+          <h3 class="prop-card-name">Dewi Sari</h3>
+          <div class="prop-card-meta">
+            <span>🛏 3 Bedrooms</span>
+            <span>🏄 Surf View</span>
+            <span>🏊 Private Pool</span>
+          </div>
+          <div class="prop-card-footer">
+            <div class="prop-card-price">$480 <small>/ night</small></div>
+            <div class="prop-card-rating"><span class="star">★</span> 4.8 (74 reviews)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prop-card" data-reveal data-delay="3">
+        <div class="prop-card-img">
+          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=90&auto=format&fit=crop" alt="Puri Gianyar">
+          <span class="prop-card-tag">Boutique Hotel</span>
+          <span class="prop-card-badge">🔥 Popular</span>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-loc">Gianyar, Bali</div>
+          <h3 class="prop-card-name">Puri Gianyar</h3>
+          <div class="prop-card-meta">
+            <span>🛏 8 Rooms</span>
+            <span>🌿 Jungle Garden</span>
+            <span>🧘 Yoga</span>
+          </div>
+          <div class="prop-card-footer">
+            <div class="prop-card-price">$290 <small>/ night</small></div>
+            <div class="prop-card-rating"><span class="star">★</span> 4.9 (112 reviews)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     DESTINATIONS
+═══════════════════════════ -->
+<section class="destinations" id="destinations">
+  <div class="container">
+    <div class="dest-header" data-reveal>
+      <p class="eyebrow">Explore by location</p>
+      <h2 class="dest-title">Our <em>destinations</em> across Bali</h2>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card" data-reveal data-delay="1">
+        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&q=90&auto=format&fit=crop" alt="Seminyak">
+        <div class="dest-overlay"></div>
+        <div class="dest-content">
+          <h3 class="dest-name">Seminyak</h3>
+          <p class="dest-count">12 properties</p>
+          <span class="dest-btn">Discover →</span>
+        </div>
+      </div>
+      <div class="dest-card" data-reveal data-delay="2">
+        <img src="https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=500&q=90&auto=format&fit=crop" alt="Ubud">
+        <div class="dest-overlay"></div>
+        <div class="dest-content">
+          <h3 class="dest-name">Ubud</h3>
+          <p class="dest-count">9 properties</p>
+          <span class="dest-btn">Discover →</span>
+        </div>
+      </div>
+      <div class="dest-card" data-reveal data-delay="3">
+        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&q=90&auto=format&fit=crop" alt="Canggu">
+        <div class="dest-overlay"></div>
+        <div class="dest-content">
+          <h3 class="dest-name">Canggu</h3>
+          <p class="dest-count">11 properties</p>
+          <span class="dest-btn">Discover →</span>
+        </div>
+      </div>
+      <div class="dest-card" data-reveal data-delay="4">
+        <img src="https://images.unsplash.com/photo-1565967511849-76a60a516170?w=500&q=90&auto=format&fit=crop" alt="Uluwatu">
+        <div class="dest-overlay"></div>
+        <div class="dest-content">
+          <h3 class="dest-name">Uluwatu</h3>
+          <p class="dest-count">8 properties</p>
+          <span class="dest-btn">Discover →</span>
+        </div>
+      </div>
+      <div class="dest-card" data-reveal data-delay="5">
+        <img src="https://images.unsplash.com/photo-1596178060671-7a80dc8059ea?w=500&q=90&auto=format&fit=crop" alt="Jimbaran">
+        <div class="dest-overlay"></div>
+        <div class="dest-content">
+          <h3 class="dest-name">Jimbaran</h3>
+          <p class="dest-count">7 properties</p>
+          <span class="dest-btn">Discover →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     CELEBRATE / EVENTS
+═══════════════════════════ -->
+<section class="celebrate" id="events">
+  <div class="container">
+    <div class="celebrate-header" data-reveal>
+      <div>
+        <p class="eyebrow" style="color:var(--sandstone);">Events & celebrations</p>
+        <h2 class="celebrate-title">Celebrate <em>with us</em></h2>
+      </div>
+      <p class="celebrate-sub">From intimate weddings to family reunions and corporate retreats — our properties set the scene for moments that last a lifetime.</p>
+    </div>
+
+    <!-- Photo mosaic -->
+    <div class="celebrate-mosaic">
+      <div class="mosaic-item tall">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=90&auto=format&fit=crop" alt="Wedding">
+        <span class="mosaic-label">Weddings</span>
+      </div>
+      <div class="mosaic-item">
+        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=90&auto=format&fit=crop" alt="Pool party">
+        <span class="mosaic-label">Pool parties</span>
+      </div>
+      <div class="mosaic-item">
+        <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&q=90&auto=format&fit=crop" alt="Private dining">
+        <span class="mosaic-label">Private dining</span>
+      </div>
+      <div class="mosaic-item wide">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1000&q=90&auto=format&fit=crop" alt="Corporate retreat">
+        <span class="mosaic-label">Corporate retreats</span>
+      </div>
+      <div class="mosaic-item">
+        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=90&auto=format&fit=crop" alt="Family reunion">
+        <span class="mosaic-label">Family reunions</span>
+      </div>
+      <div class="mosaic-item">
+        <img src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=600&q=90&auto=format&fit=crop" alt="Honeymoon">
+        <span class="mosaic-label">Honeymoons</span>
+      </div>
+    </div>
+
+    <!-- Event venue cards -->
+    <div class="event-cards">
+      <div class="event-card" data-reveal data-delay="1">
+        <div class="event-card-img">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=700&q=90&auto=format&fit=crop" alt="Villa Selasih event">
+        </div>
+        <div class="event-card-body">
+          <div class="event-card-tag">Seminyak · Wedding venue</div>
+          <h3 class="event-card-name">Villa Selasih</h3>
+          <p class="event-card-meta">Lush garden terrace with a 25m pool and open-air pavilion. The perfect canvas for a tropical Bali wedding.</p>
+          <div class="event-card-footer">
+            <span class="event-card-cap">Up to 80 pax</span>
+            <a href="#" class="event-card-cta">View Details →</a>
+          </div>
+        </div>
+      </div>
+      <div class="event-card" data-reveal data-delay="2">
+        <div class="event-card-img">
+          <img src="https://images.unsplash.com/photo-1520166012956-add9ba4835b0?w=700&q=90&auto=format&fit=crop" alt="Uma Lestari event">
+        </div>
+        <div class="event-card-body">
+          <div class="event-card-tag">Uluwatu · Clifftop venue</div>
+          <h3 class="event-card-name">Uma Lestari</h3>
+          <p class="event-card-meta">Perched 80 metres above the Indian Ocean, Uma Lestari delivers a ceremony backdrop unlike anywhere else on earth.</p>
+          <div class="event-card-footer">
+            <span class="event-card-cap">Up to 50 pax</span>
+            <a href="#" class="event-card-cta">View Details →</a>
+          </div>
+        </div>
+      </div>
+      <div class="event-card" data-reveal data-delay="3">
+        <div class="event-card-img">
+          <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=700&q=90&auto=format&fit=crop" alt="Karang Putih event">
+        </div>
+        <div class="event-card-body">
+          <div class="event-card-tag">Nusa Dua · Resort event</div>
+          <h3 class="event-card-name">Karang Putih</h3>
+          <p class="event-card-meta">Expansive beachfront with multiple event spaces, a dedicated wedding planner, and full F&B capabilities for large groups.</p>
+          <div class="event-card-footer">
+            <span class="event-card-cap">Up to 250 pax</span>
+            <a href="#" class="event-card-cta">View Details →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     REVIEWS
+═══════════════════════════ -->
+<section class="reviews">
+  <div class="container">
+    <div class="reviews-header" data-reveal>
+      <p class="eyebrow">Guest stories</p>
+      <h2 class="reviews-title">What our guests <em>say.</em></h2>
+    </div>
+  </div>
+  <div class="reviews-track-wrap" style="margin-top:3rem;">
+    <div class="reviews-track" id="reviewsTrack">
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&q=90&auto=format&fit=crop" alt="Villa Selasih"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Villa Selasih</div>
+          <p class="review-text">"Absolutely stunning. The villa is beyond beautiful — spacious, impeccably clean, and the staff anticipate your needs before you even ask. We'll be back every year."</p>
+          <div class="review-author"><div><div class="review-name">James Hartley</div></div><span class="review-country">🇦🇺 Australia</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=500&q=90&auto=format&fit=crop" alt="Tirta Wangi"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Tirta Wangi</div>
+          <p class="review-text">"We've stayed in many boutique hotels in Ubud — none compare. The rice field view at sunrise from the infinity pool is something we'll never forget."</p>
+          <div class="review-author"><div><div class="review-name">Sarah Chen</div></div><span class="review-country">🇸🇬 Singapore</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500&q=90&auto=format&fit=crop" alt="Puri Gianyar"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Puri Gianyar</div>
+          <p class="review-text">"The breakfast alone was worth the trip — freshly made, generous, and served on the garden terrace. The whole experience felt like being a guest at a friend's beautiful home."</p>
+          <div class="review-author"><div><div class="review-name">Myriam Nekissa</div></div><span class="review-country">🇫🇷 France</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=500&q=90&auto=format&fit=crop" alt="Karang Putih"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Karang Putih</div>
+          <p class="review-text">"We hosted our family reunion here — 22 people, 5 nights. The team handled every detail seamlessly. The kids didn't want to leave the pool and neither did the adults."</p>
+          <div class="review-author"><div><div class="review-name">Lindsey Morgan</div></div><span class="review-country">🇺🇸 USA</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=500&q=90&auto=format&fit=crop" alt="Uma Lestari"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Uma Lestari</div>
+          <p class="review-text">"We chose Uma Lestari for our honeymoon and it exceeded every expectation. The cliff views, the silence, the personal service — pure magic. Our favourite place on earth."</p>
+          <div class="review-author"><div><div class="review-name">Emma & Tom Davies</div></div><span class="review-country">🇬🇧 UK</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1540541338537-1220020e4c92?w=500&q=90&auto=format&fit=crop" alt="Dewi Sari"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Dewi Sari</div>
+          <p class="review-text">"Right in the heart of Canggu, steps from Echo Beach. Three bedrooms, a beautiful pool, and a team that was responsive 24/7. The complimentary airport transfer was a lovely touch."</p>
+          <div class="review-author"><div><div class="review-name">Ruud van Harskamp</div></div><span class="review-country">🇳🇱 Netherlands</span></div>
+        </div>
+      </div>
+      <!-- duplicate for loop -->
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&q=90&auto=format&fit=crop" alt="Villa Selasih"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Villa Selasih</div>
+          <p class="review-text">"Absolutely stunning. The villa is beyond beautiful — spacious, impeccably clean, and the staff anticipate your needs before you even ask. We'll be back every year."</p>
+          <div class="review-author"><div><div class="review-name">James Hartley</div></div><span class="review-country">🇦🇺 Australia</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=500&q=90&auto=format&fit=crop" alt="Tirta Wangi"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Tirta Wangi</div>
+          <p class="review-text">"We've stayed in many boutique hotels in Ubud — none compare. The rice field view at sunrise from the infinity pool is something we'll never forget."</p>
+          <div class="review-author"><div><div class="review-name">Sarah Chen</div></div><span class="review-country">🇸🇬 Singapore</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500&q=90&auto=format&fit=crop" alt="Puri Gianyar"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Puri Gianyar</div>
+          <p class="review-text">"The breakfast alone was worth the trip — freshly made, generous, and served on the garden terrace. The whole experience felt like being a guest at a friend's beautiful home."</p>
+          <div class="review-author"><div><div class="review-name">Myriam Nekissa</div></div><span class="review-country">🇫🇷 France</span></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card-img"><img src="https://images.unsplash.com/photo-1540202404-a2f29016b523?w=500&q=90&auto=format&fit=crop" alt="Dewi Sari"></div>
+        <div class="review-card-body">
+          <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="review-villa">Dewi Sari</div>
+          <p class="review-text">"The complimentary breakfast was delicious and the villa exceeded all expectations. The pool is gorgeous and the surroundings are incredibly peaceful."</p>
+          <div class="review-author"><div><div class="review-name">Derek Thompson</div></div><span class="review-country">🇳🇿 New Zealand</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     PERKS / OWNER CTA
+═══════════════════════════ -->
+<section class="perks" id="contact">
+  <div class="container">
+    <div class="perks-grid">
+      <div data-reveal="left">
+        <p class="eyebrow">For property owners</p>
+        <h2 class="perks-title">Your property, <em>fully tended.</em></h2>
+        <p class="perks-body">Whether you own one villa or a growing portfolio — Lefanna brings the same meticulous care to every property we manage.</p>
+        <ul class="perks-list">
+          <li>Full operational management — no more landlord stress</li>
+          <li>Revenue optimisation across Airbnb, Booking.com & direct channels</li>
+          <li>Transparent monthly reports delivered on the 5th</li>
+          <li>Dedicated property manager — one person, always reachable</li>
+          <li>Complimentary photography & listing setup on all platforms</li>
+          <li>Legal & compliance support for Bali STR regulations</li>
+        </ul>
+        <a href="#" class="perks-cta">Start a conversation →</a>
+      </div>
+      <div class="perks-right" data-reveal="right">
+        <div class="perk-img-card">
+          <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=90&auto=format&fit=crop" alt="Managed villa">
+          <div class="perk-overlay"><div class="perk-name">Villa Selasih, Seminyak</div></div>
+        </div>
+        <div class="perk-img-card">
+          <img src="https://images.unsplash.com/photo-1596386461350-326ccb383e9f?w=600&q=90&auto=format&fit=crop" alt="Interior styling">
+          <div class="perk-overlay"><div class="perk-name">Puri Gianyar, Gianyar</div></div>
+        </div>
+        <div class="perk-img-card">
+          <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1000&q=90&auto=format&fit=crop" alt="Pool morning">
+          <div class="perk-overlay"><div class="perk-name">Uma Lestari, Uluwatu</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     AFFILIATE PARTNERS
+═══════════════════════════ -->
+<div class="partners">
+  <div class="container">
+    <p class="partners-label">Trusted partners & media features</p>
+    <div class="partners-logos">
+      <span class="partner">Airbnb</span>
+      <span class="partner">Booking.com</span>
+      <span class="partner">Marriott Bonvoy</span>
+      <span class="partner">Singapore Airlines</span>
+      <span class="partner">Travel + Leisure</span>
+      <span class="partner">Condé Nast</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     NEWSLETTER
+═══════════════════════════ -->
+<section class="newsletter">
+  <div class="container">
+    <div class="newsletter-inner">
+      <div data-reveal="left">
+        <p class="eyebrow" style="color:var(--sandstone);">Stay in the loop</p>
+        <h2 class="newsletter-title">Get exclusive deals &amp;<br><em>the latest news.</em></h2>
+        <p class="newsletter-body">Monthly offers, new property launches, seasonal specials and Bali travel tips — delivered straight to your inbox. No spam, ever.</p>
+      </div>
+      <div data-reveal="right">
+        <div class="newsletter-form">
+          <input type="text" class="newsletter-input" placeholder="Your full name">
+          <input type="email" class="newsletter-input" placeholder="Your email address">
+          <button class="newsletter-btn" id="newsletterBtn">Subscribe now →</button>
+          <p class="newsletter-note">By subscribing you agree to our privacy policy. Unsubscribe anytime.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     FOOTER
+═══════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-wrap">
+          <div class="footer-logo">lefanna<span>.</span></div>
+        </div>
+        <p class="footer-tagline">Bali's trusted hotel and villa management company. Professional, personal, and quietly exceptional since 2017.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" class="footer-social"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+          <a href="#" class="footer-social"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a href="#" class="footer-social"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Properties</h4>
+        <ul class="footer-links">
+          <li><a href="#">Browse all villas</a></li>
+          <li><a href="#">Hotels & resorts</a></li>
+          <li><a href="#">Event venues</a></li>
+          <li><a href="#">Monthly rentals</a></li>
+          <li><a href="#">New listings</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">For owners</h4>
+        <ul class="footer-links">
+          <li><a href="#">List your property</a></li>
+          <li><a href="#">Owner portal</a></li>
+          <li><a href="#">Revenue calculator</a></li>
+          <li><a href="#">Our process</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Lefanna</a></li>
+          <li><a href="#">Our team</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Reservations</h4>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            hello@lefanna.id
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.29 6.29l1.42-1.42a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.16v.77z"/></svg>
+            +62 361 888 000
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Jl. Petitenget No. 9<br>Seminyak, Bali 80361
+          </div>
+          <div class="footer-contact-item" style="margin-top:.75rem; color:rgba(244,236,224,.3);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Mon–Fri, 08.00–18.00 (GMT+8)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Lefanna Property Management · All Rights Reserved</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════
+     JAVASCRIPT
+═══════════════════════════ -->
+<script>
+// ── Navbar scroll ──────────────────
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+// ── Hero slideshow ─────────────────
+const slides = document.querySelectorAll('.hero-slide');
+const dots = document.querySelectorAll('.hero-dot');
+let current = 0, timer;
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  dots[current].classList.remove('active');
+  current = (n + slides.length) % slides.length;
+  slides[current].classList.add('active');
+  dots[current].classList.add('active');
+}
+function startTimer() {
+  timer = setInterval(() => goTo(current + 1), 5000);
+}
+dots.forEach(dot => {
+  dot.addEventListener('click', () => {
+    clearInterval(timer);
+    goTo(+dot.dataset.slide);
+    startTimer();
+  });
+});
+startTimer();
+
+// ── Scroll reveal ──────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
+
+// ── Property filter tabs ───────────
+document.querySelectorAll('.prop-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.prop-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// ── Newsletter button ──────────────
+const nlBtn = document.getElementById('newsletterBtn');
+if (nlBtn) {
+  nlBtn.addEventListener('click', () => {
+    nlBtn.textContent = 'Subscribed ✓';
+    nlBtn.style.background = 'var(--palm)';
+    setTimeout(() => {
+      nlBtn.textContent = 'Subscribe now →';
+      nlBtn.style.background = '';
+    }, 3000);
+  });
+}
+
+// ── Image error fallback ───────────
+const grads = [
+  'linear-gradient(135deg,#3D2B1F,#B5512E)',
+  'linear-gradient(135deg,#2D4A3E,#88A39B)',
+  'linear-gradient(135deg,#B5512E,#D4A574)',
+  'linear-gradient(135deg,#3D2B1F,#2D4A3E)',
+  'linear-gradient(135deg,#D4A574,#B5512E)',
+];
+let gi = 0;
+document.querySelectorAll('img').forEach(img => {
+  img.addEventListener('error', function() {
+    this.parentElement.style.background = grads[gi++ % grads.length];
+    this.style.display = 'none';
+  });
+});
+
+// ── Simple date hint ──────────────
+const dp = document.getElementById('datepicker');
+if (dp) {
+  dp.addEventListener('focus', () => {
+    if (!dp.value) {
+      const today = new Date();
+      const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+      const fmt = d => d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      dp.value = `${fmt(today)} – ${fmt(tomorrow)}`;
+    }
+  });
+}
+</script>
+</body>
+</html>
