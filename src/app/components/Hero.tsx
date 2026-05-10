@@ -1,15 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useLang } from "../context/LanguageContext";
 
 const slides = [
-  { src: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf4?w=1920&q=90&auto=format&fit=crop", alt: "Bali villa aerial" },
+  { src: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&q=90&auto=format&fit=crop", alt: "Bali villa aerial" },
   { src: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1920&q=90&auto=format&fit=crop", alt: "Villa pool" },
   { src: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1920&q=90&auto=format&fit=crop", alt: "Luxury hotel" },
-  { src: "https://images.unsplash.com/photo-1540541338537-1220020e4c92?w=1920&q=90&auto=format&fit=crop", alt: "Bali resort" },
+  { src: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1920&q=90&auto=format&fit=crop", alt: "Bali resort" },
 ];
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
+  const { t } = useLang();
+  const h = t.hero;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -49,23 +52,23 @@ export default function Hero() {
       </div>
 
       <div className="hero-content container">
-        <p className="hero-eyebrow">Bali&apos;s finest property management</p>
+        <p className="hero-eyebrow">{h.eyebrow}</p>
         <h1 className="hero-title">
-          <span className="line">Villas that make</span>
-          <span className="line">you feel</span>
-          <span className="line">at home.</span>
+          {h.title.map((line, i) => (
+            <span key={i} className="line">{line}</span>
+          ))}
         </h1>
 
         <div className="search-box">
           <div className="search-field">
-            <span className="search-field-label">Find a property</span>
-            <input type="text" className="search-field-input" placeholder="Villa name or keyword..." />
+            <span className="search-field-label">{h.findProperty}</span>
+            <input type="text" className="search-field-input" placeholder={h.findPlaceholder} />
           </div>
           <div className="search-divider" />
           <div className="search-field">
-            <span className="search-field-label">Destination</span>
+            <span className="search-field-label">{h.destination}</span>
             <select className="search-field-input">
-              <option value="">All locations</option>
+              <option value="">{h.allLocations}</option>
               <option>Seminyak</option>
               <option>Canggu</option>
               <option>Ubud</option>
@@ -76,13 +79,22 @@ export default function Hero() {
             </select>
           </div>
           <div className="search-divider" />
-          <div className="search-field">
-            <span className="search-field-label">Check-in — Check-out</span>
-            <input type="text" className="search-field-input" placeholder="Select dates" readOnly />
+          <div className="search-field search-field-dates">
+            <div className="search-date-group">
+              <div className="search-date-col">
+                <span className="search-field-label">{h.checkinLabel}</span>
+                <input type="date" className="search-field-input search-date-input" placeholder={h.checkinPlaceholder} />
+              </div>
+              <div className="search-date-sep">→</div>
+              <div className="search-date-col">
+                <span className="search-field-label">{h.checkoutLabel}</span>
+                <input type="date" className="search-field-input search-date-input" placeholder={h.checkoutPlaceholder} />
+              </div>
+            </div>
           </div>
           <div className="search-divider" />
           <div className="search-field" style={{ flex: "0 0 auto" }}>
-            <span className="search-field-label">Guests</span>
+            <span className="search-field-label">{h.guests}</span>
             <select className="search-field-input" style={{ minWidth: 80 }}>
               <option>2</option><option>3</option><option>4</option>
               <option>5</option><option>6</option><option>8+</option>
@@ -92,7 +104,7 @@ export default function Hero() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
             </svg>
-            Search
+            {h.search}
           </button>
         </div>
       </div>
